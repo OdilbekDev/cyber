@@ -1,12 +1,14 @@
-from cmath import exp
-from difflib import restore
-from msilib.schema import Directory
-from unicodedata import name
-from django.shortcuts import render
+from http.client import HTTPResponse
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, render
 from rest_framework.response import Response 
 from rest_framework.decorators import api_view
 from Api.models import *
 from Api.serializer import *
+from django.contrib.auth import authenticate
+from django.contrib.auth import login,logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 @api_view(['GET'])
 def Info_get(request):
@@ -53,7 +55,7 @@ def Games_get(request):
 
 @api_view(['GET'])
 def Last_Turnir_get(request):
-    a = Last_Turnir.objects.all()
+    a = Turnir.objects.all()
     ser = LastTurnirSerializer(a,many=True)
     return Response(ser.data)
 
@@ -99,7 +101,7 @@ def Team_post(request):
     Email = request.POST.get('Email')
     Phone_Number = request.POST.get('Phone_Number')
     game = request.POST.get('game')
-    a= Team.objects.create(name=name,img_team=img_team,An_experience_1=An_experience_1,An_experience_2=An_experience_2,Number_Player=Number_Player,Directions=Directions,Email=Email,Phone_Number=Phone_Number,game_id=game)
+    a= Team.objects.create(name=name, img_team=img_team, An_experience_1=An_experience_1, An_experience_2=An_experience_2, Number_Player=Number_Player, Directions=Directions, Email=Email, Phone_Number=Phone_Number, game_id=game )
     b = Team.objects.all().order_by('-id')
     ser = TeamSerializer(b, many=True)
 
@@ -125,7 +127,7 @@ def Random_Team(request,pk):
         team = random.sample(users, k=2)
         data[team[0].name] = str(team[1].name)
         for e in team:
-            print(e)
+            print(data)
             users.remove(e)
     return Response(data)
 
@@ -137,14 +139,42 @@ def Random_Team_One(request,pk):
     for i in range(int(len(player)/2)):
         team = random.sample(player, k=2)
         data[team[0].name] = str(team[1].name)
-        
+        print(data[team[0]])
         for e in team:
             player.remove(e)
+        
+        
     return Response(data)
 
 
 @api_view(['GET'])
 def FilterTurnir(request, pk):
-    turnir = Last_Turnir.objects.get(id=pk)
+    game = Games.objects.get(id=pk)
+    turnir = Turnir.objects.get(game=game)
     ser = LastTurnirSerializer(turnir)
     return Response(ser.data)
+
+
+@api_view(['GET'])
+def FilterOneVsOne(request, pk):
+    game = Games.objects.get(id=pk)
+    turnir = One_Vs_One.objects.get(game=game)
+    ser = OneVsOneSerializer(turnir)
+    return Response(ser.data)
+
+
+def Login_funk(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        login = list(Login.objects.all())
+        for i in login:
+            if username == i.username and password == i.password:
+                print(True)
+                return redirect('admin')
+            else:print(False)
+    return render(request, 'index.html')
+@api_view(['DELETE', 'POST','GET','PUT'])
+def Admin_Page(request):
+     
+    return render(request, 'table-basic.html')

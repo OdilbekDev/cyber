@@ -25,7 +25,7 @@ class ImageSerializer(serializers.ModelSerializer):
 class LastTurnirSerializer(serializers.ModelSerializer):
     class Meta:
         depth=1
-        model = Last_Turnir
+        model = Turnir
         fields = '__all__'
 
 
@@ -66,6 +66,12 @@ class IntroductorySerializer(serializers.ModelSerializer):
 
 
 class GameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Games
+        fields = '__all__'
+
+
+class OneVsOneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Games
         fields = '__all__'

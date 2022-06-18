@@ -19,6 +19,7 @@ urlpatterns = [
     path('news/', New_Letter_post),
     path('random_team/<int:pk>/', Random_Team),
     path('random_team_one/<int:pk>/', Random_Team_One),
-    path('turnir/filter/<int:pk>/', FilterTurnir)
-
-]
+    path('turnir/filter/<int:pk>/', FilterTurnir),
+    
+    
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

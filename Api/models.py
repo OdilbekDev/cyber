@@ -1,4 +1,3 @@
-from turtle import title
 from django.db import models
 
 # Create your models here.
@@ -24,6 +23,8 @@ class Our_Missions(models.Model):
 class Games(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self) -> str:
+        return self.name
 class Team_one_player(models.Model):
     name = models.CharField(max_length=255)
     img_team = models.ImageField(upload_to='Image_Team_One_Player/')
@@ -50,12 +51,18 @@ class Team(models.Model):
         return self.name
 
 
-class Last_Turnir(models.Model):
+class Turnir(models.Model):
     team_1 = models.ForeignKey(Team, on_delete=models.CASCADE,related_name='team_1')
     team_2 = models.ForeignKey(Team, on_delete=models.CASCADE)
-    date =models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField()
     game = models.ForeignKey(Games, on_delete=models.CASCADE)
 
+
+class One_Vs_One(models.Model):
+    user1 = models.ForeignKey(Team_one_player, on_delete=models.CASCADE,related_name='user1')
+    user2 = models.ForeignKey(Team_one_player, on_delete=models.CASCADE)
+    date =models.DateTimeField(auto_now_add=True)
+    game = models.ForeignKey(Games, on_delete=models.CASCADE)
 
 
 class Img_Gallery(models.Model):
@@ -70,3 +77,7 @@ class Strimes(models.Model):
 class News_Letter(models.Model):
     email = models.EmailField()
     
+
+class Login(models.Model):
+    username = models.CharField(max_length=255)
+    password = models.CharField(max_length=255)
